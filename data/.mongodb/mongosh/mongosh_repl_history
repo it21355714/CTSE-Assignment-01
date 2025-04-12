@@ -1,0 +1,11 @@
+})
+  ]
+    { role: "dbAdmin", db: "product-service" }
+    { role: "readWrite", db: "product-service" },
+  roles: [
+  pwd: "password",
+  user: "root",
+db.createUser({
+use admin
+db.getCollectionNames()
+use product-service
