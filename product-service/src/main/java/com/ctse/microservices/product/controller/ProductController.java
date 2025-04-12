@@ -28,7 +28,7 @@ public class ProductController {
     @ResponseStatus(HttpStatus.OK)
     public List<ProductResponse> getAllProducts() {
         return productService.getAllProducts();
-        //To test CI/CD pipeline
+        //To test02 CI/CD pipeline
 
     }
 }
