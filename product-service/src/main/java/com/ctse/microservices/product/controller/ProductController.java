@@ -29,4 +29,15 @@ public class ProductController {
         return productService.getAllProducts();
 
     }
+
+    @GetMapping("/ping")
+    @ResponseStatus(HttpStatus.OK)
+    public String testConnection() {
+        try {
+            long count = productService.getProductCount();
+            return "✅ Connected to MongoDB. Product count: " + count;
+        } catch (Exception e) {
+            return "❌ Failed to connect to MongoDB: " + e.getMessage();
+        }
+    }
 }
