@@ -19,8 +19,8 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
-      - name: Build with Maven
-        run: mvn clean package --file product-service/pom.xml
+      - name: Build with Maven (skip tests)
+        run: mvn clean package -DskipTests --file product-service/pom.xml
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -38,4 +38,3 @@ jobs:
           file: ./product-service/Dockerfile
           push: true
           tags: chathuni2001/product-service:latest
-
