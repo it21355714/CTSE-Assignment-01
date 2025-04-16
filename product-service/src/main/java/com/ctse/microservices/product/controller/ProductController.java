@@ -32,4 +32,15 @@ public class ProductController {
         //To test03 CI/CD pipeline
 
     }
+
+    @GetMapping("/ping")
+    @ResponseStatus(HttpStatus.OK)
+    public String testConnection() {
+        try {
+            long count = productService.getProductCount();
+            return "✅ Connected to MongoDB. Product count: " + count;
+        } catch (Exception e) {
+            return "❌ Failed to connect to MongoDB: " + e.getMessage();
+        }
+    }
 }
