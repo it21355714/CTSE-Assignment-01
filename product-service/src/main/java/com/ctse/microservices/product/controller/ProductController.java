@@ -17,6 +17,11 @@ public class ProductController {
 
     private final ProductService productService;
 
+    @GetMapping("/test")
+    public String test() {
+        return "Product Service is working!";
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ProductResponse createProduct(@RequestBody ProductRequest productRequest) {
@@ -30,14 +35,5 @@ public class ProductController {
 
     }
 
-    @GetMapping("/ping")
-    @ResponseStatus(HttpStatus.OK)
-    public String testConnection() {
-        try {
-            long count = productService.getProductCount();
-            return "✅ Connected to MongoDB. Product count: " + count;
-        } catch (Exception e) {
-            return "❌ Failed to connect to MongoDB: " + e.getMessage();
-        }
-    }
+
 }
