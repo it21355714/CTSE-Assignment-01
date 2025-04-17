@@ -34,7 +34,7 @@ jobs:
       - name: Build and Push Docker image
         uses: docker/build-push-action@v4
         with:
-          context: ./product-service
-          file: ./product-service/Dockerfile
+          context: .                 # root directory
+          file: ./Dockerfile         # Dockerfile is at root
           push: true
           tags: chathuni2001/product-service:latest
