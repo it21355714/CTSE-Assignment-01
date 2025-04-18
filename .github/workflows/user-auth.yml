@@ -1,4 +1,5 @@
 name: CI/CD for Docker Image
+
 on:
   push:
     branches:
@@ -26,8 +27,8 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t dhanushikan/authservice:latest .
+          docker build -t dhanushikan/authservice:latest ./authservice
 
-      - name: Push Docker image
+      - name: Push Docker image to Docker Hub
         run: |
           docker push dhanushikan/authservice:latest
