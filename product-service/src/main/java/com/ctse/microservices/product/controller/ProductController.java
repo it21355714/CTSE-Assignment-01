@@ -20,23 +20,27 @@ public class ProductController {
     @GetMapping("/test")
     public String test() {
         return "Product Service is working!";
+        // Adding comment2 to check whether collabarators can push code to their
+        // branches
+
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ProductResponse createProduct(@RequestBody ProductRequest productRequest) {
         return productService.createProduct(productRequest);
-        //To create a product
+        // To create a product
+        // Adding comment1 to check whether collabarators can push code to their
+        // branches
     }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<ProductResponse> getAllProducts() {
         return productService.getAllProducts();
-        //To test02 CI/CD pipeline
-        //To test03 CI/CD pipeline
+        // To test02 CI/CD pipeline
+        // To test03 CI/CD pipeline
 
     }
-
 
 }
