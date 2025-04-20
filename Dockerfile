@@ -18,7 +18,7 @@ WORKDIR /app
 # Copy the built jar from the previous stage
 COPY --from=builder /build/inventory-service/target/*.jar app.jar
 
-EXPOSE 8080
+EXPOSE 8086
 
 # Run the app
 ENTRYPOINT ["java", "-jar", "app.jar"]
