@@ -8,6 +8,9 @@ import com.project.microservices.inventory.Exception.InventoryNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import io.github.resilience4j.retry.annotation.Retry;
+
+
+
 import java.util.List;
 
 import javax.validation.Valid;
@@ -24,7 +27,7 @@ public class InventoryService {
 	private final InventoryRepository inventoryRepository;
 	
 	//Check if an inventory is in stock for a given name and quantity
-	public boolean isInStock(int id, int quantity) {
+	public boolean isInStock(String id, int quantity) {
 		log.info("Checking if inventory with ID {} is in stock with quantity {}", id, quantity);
 		return inventoryRepository.existsByIdAndQuantityGreaterThanEqual(id, quantity);
 	}
@@ -36,13 +39,13 @@ public class InventoryService {
     }
 
 	@Retry(name = "inventoryService", fallbackMethod = "fallbackGetInventoryById")
-public Inventory getInventoryById(int id) {
+	public Inventory getInventoryById(String id) {
     log.info("Fetching inventory with ID {}", id);
     return inventoryRepository.findById(id)
             .orElseThrow(() -> new InventoryNotFoundException("Inventory with ID " + id + " not found"));
 }
 
-public Inventory fallbackGetInventoryById(int id, Exception ex) {
+public Inventory fallbackGetInventoryById(String id, Exception ex) {
     log.error("Fallback triggered for ID {}: {}", id, ex.getMessage());
     Inventory fallback = new Inventory();
     fallback.setId(id);
@@ -62,7 +65,7 @@ public Inventory fallbackGetInventoryById(int id, Exception ex) {
     return new InventoryResponse(
         saved.getId(),
         saved.getName(),
-        saved.getQuantity(),
+		saved.getQuantity(),
         saved.getPrice(),
         saved.getCreated_at()
     );
@@ -70,13 +73,13 @@ public Inventory fallbackGetInventoryById(int id, Exception ex) {
 
 
 	//Delete an inventory by id
-	public void deleteInventory(int id) {
+	public void deleteInventory(String id) {
 		log.info("Deleting inventory with ID {}", id);
 		inventoryRepository.deleteById(id);
 	}
 
 	//Update an inventory by id
-	public Inventory updateInventory(@PathVariable int id, @Valid @RequestBody Inventory updatedInventory) {
+	public Inventory updateInventory(@PathVariable String id, @Valid @RequestBody Inventory updatedInventory) {
 		log.info("Updating inventory with ID {}: {}", id, updatedInventory);
 		Inventory existingInventory = inventoryRepository.findById(id).orElseThrow(() -> new InventoryNotFoundException("Inventory with ID " + id + " not found"));
 		if (existingInventory != null) {

@@ -1,7 +1,7 @@
 package com.project.microservices.inventory.dto;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import lombok.*;
 
@@ -10,9 +10,9 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class InventoryResponse {
-    private int id;
+    private String id;
     private String name;
     private int quantity;
     private BigDecimal price;
-    private Timestamp created_at;
+    private LocalDateTime created_at;
 }

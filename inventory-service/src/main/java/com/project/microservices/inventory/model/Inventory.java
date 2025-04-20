@@ -1,35 +1,26 @@
 package com.project.microservices.inventory.model;
 
+
 import java.math.BigDecimal;
-import java.sql.Timestamp;
-
+import java.time.LocalDateTime;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.annotation.Id;
+import lombok.*;
 
-import jakarta.persistence.*;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Entity
-@Table(name = "t_inventory")
-@EntityListeners(AuditingEntityListener.class)
-@Getter
-@Setter
+@Data
+@Document(collection = "inventory")
 @AllArgsConstructor
 @NoArgsConstructor
 
 public class Inventory {
 	@Id
-	@GeneratedValue (strategy = GenerationType.IDENTITY)
-	private int Id;
+	private String Id;
 	private String name;
 	private int quantity;
 	private BigDecimal  price;
 
 	@CreatedDate
-	@Column(name = "created_at", nullable = false, updatable = false)
-	private Timestamp  created_at;
+	private LocalDateTime created_at;
 }

@@ -1,11 +1,11 @@
 package com.project.microservices.inventory.Repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
 
+import org.springframework.data.mongodb.repository.MongoRepository;
 import com.project.microservices.inventory.model.Inventory;
 
-public interface InventoryRepository extends JpaRepository<Inventory,Integer>{
+public interface InventoryRepository extends MongoRepository<Inventory,String>{
 
-	boolean existsByIdAndQuantityGreaterThanEqual(int id, int quantity);
+	boolean existsByIdAndQuantityGreaterThanEqual(String id, int quantity);
 
 }

@@ -1,41 +1,26 @@
 version: '3.8'  
 
 services:
-  mysql:
-    image: mysql:8.3.0
-    container_name: mysql
+  mongo:
+    image: mongo:latest
+    container_name: mongodb
     ports:
-      - "3306:3306"
-    environment:  
-      MYSQL_ROOT_PASSWORD: mysql
-      MYSQL_DATABASE: inventory_service
-      restart: always
-    volumes:
-      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql  
-      - ./docker/mysql/data:/var/lib/mysql
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      - "27017:27017"
     networks:
       - inventory-net
 
-  inventory-service:
+  iinventory-service:
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ..
+      dockerfile: ./Dockerfile
     container_name: inventory-service
     ports:
       - "8085:8080"
-    
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/inventory_service
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: mysql
+      SPRING_DATA_MONGODB_URI: mongodb+srv://tharindunimedicode455:HZ3JO1rUQCFAU26a@ctse-cluster.acuuqvz.mongodb.net/inventory_service?retryWrites=true&w=majority&appName=CTSE-Cluster
+
     depends_on:
-      mysql:
-        condition: service_healthy
+      - mongo
     networks:
       - inventory-net
 

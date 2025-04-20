@@ -20,7 +20,7 @@ public class InventoryController {
 	
 	@GetMapping("/check-stock")
 	@ResponseStatus(HttpStatus.OK)
-	public boolean isInStock(@RequestParam int id, @RequestParam int quantity) {
+	public boolean isInStock(@RequestParam String id, @RequestParam int quantity) {
         return inventoryService.isInStock(id, quantity);
     }
 
@@ -41,13 +41,13 @@ public class InventoryController {
 	}	
 
 	@PutMapping("/update/{id}")	
-	public Inventory updateInventory(@Valid @PathVariable int id, @RequestBody Inventory inventory) {
+	public Inventory updateInventory(@Valid @PathVariable String id, @RequestBody Inventory inventory) {
 		return inventoryService.updateInventory(id, inventory);
 	}
 
 	@DeleteMapping("/delete/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void deleteInventory(@PathVariable int id) {
+	public void deleteInventory(@PathVariable String id) {
 		inventoryService.deleteInventory(id);
 	}
 
