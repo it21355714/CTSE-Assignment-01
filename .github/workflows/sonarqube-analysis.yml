@@ -3,10 +3,10 @@ name: SonarCloud Analysis
 on:
   push:
     branches:
-      - order-service
+      - main
   pull_request:
     branches:
-      - order-service
+      - main
     types: [opened, synchronize, reopened]
 
 jobs:
