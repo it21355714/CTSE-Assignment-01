@@ -15,7 +15,7 @@ services:
       dockerfile: ./Dockerfile
     container_name: inventory-service
     ports:
-      - "8085:8080"
+      - "8086:8080"
     environment:
       SPRING_DATA_MONGODB_URI: mongodb+srv://tharindunimedicode455:HZ3JO1rUQCFAU26a@ctse-cluster.acuuqvz.mongodb.net/inventory_service?retryWrites=true&w=majority&appName=CTSE-Cluster
 
