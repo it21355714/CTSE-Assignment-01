@@ -36,6 +36,3 @@ jobs:
           containerAppName: order-service-app
           resourceGroup: ctse-assi1
           imageToBuild: jeno1234/order-service-app:${{ github.sha }}
-
-
-
