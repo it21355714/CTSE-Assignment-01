@@ -1,48 +1,93 @@
-name: Trigger auto deployment for productservice-app
+name: Integrated CI/CD Pipeline
 
-# When this action will be executed
 on:
-  # Automatically trigger it when detected changes in repo
   push:
-    branches: 
-      [ product-service ]
+    branches:
+      - product-service # Only trigger on product-service branch
     paths:
-    - '**'
-    - '.github/workflows/productservice-app-AutoDeployTrigger-cc51c54f-22b1-4f6f-a31e-116509b9783b.yml'
-
-  # Allow manual trigger 
-  workflow_dispatch:      
+      - '**'
+      - '.github/workflows/productservice-app-AutoDeployTrigger-cc51c54f-22b1-4f6f-a31e-116509b9783b.yml'
+  pull_request:
+    types: [opened, synchronize, reopened]
+  # Allow manual trigger
+  workflow_dispatch:
 
 jobs:
-  build-and-deploy:
+  sonar-analysis:
+    name: SonarCloud Analysis
     runs-on: ubuntu-latest
-    permissions: 
-      id-token: write #This is required for requesting the OIDC JWT Token
-      contents: read #Required when GH token is used to authenticate with private repo
-
     steps:
-      - name: Checkout to the branch
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: 'zulu'
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+      - name: Cache Maven packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+      - name: Build and analyze with SonarCloud
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -f product-service/pom.xml -Dsonar.projectKey=Chathuni1012_CTSE-Assignment-01
 
+  build-and-deploy:
+    name: Build and Deploy to Azure Container Apps
+    needs: sonar-analysis # Make sure SonarCloud analysis passes first
+    if: github.event_name == 'push' && github.ref == 'refs/heads/product-service' # Deploy only on product-service branch
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write # Required for OIDC authentication
+      contents: read # Required for checkout
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+      
+      - name: Build with Maven (skip tests)
+        run: mvn clean package -DskipTests --file product-service/pom.xml
+      
       - name: Azure Login
         uses: azure/login@v1
         with:
           client-id: ${{ secrets.PRODUCTSERVICEAPP_AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.PRODUCTSERVICEAPP_AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.PRODUCTSERVICEAPP_AZURE_SUBSCRIPTION_ID }}
-
-      - name: Build and push container image to registry
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.PRODUCTSERVICEAPP_REGISTRY_USERNAME }}
+          password: ${{ secrets.PRODUCTSERVICEAPP_REGISTRY_PASSWORD }}
+      
+      - name: Build and Deploy to Azure Container Apps
         uses: azure/container-apps-deploy-action@v2
         with:
           appSourcePath: ${{ github.workspace }}
-          _dockerfilePathKey_: ./Dockerfile
+          dockerfilePath: ./Dockerfile # Update this path to match your Dockerfile location
           registryUrl: docker.io
           registryUsername: ${{ secrets.PRODUCTSERVICEAPP_REGISTRY_USERNAME }}
           registryPassword: ${{ secrets.PRODUCTSERVICEAPP_REGISTRY_PASSWORD }}
           containerAppName: productservice-app
           resourceGroup: ctse-assi1
           imageToBuild: chathuni2001/productservice-app:${{ github.sha }}
-          _buildArgumentsKey_: |
-            _buildArgumentsValues_
-
 
