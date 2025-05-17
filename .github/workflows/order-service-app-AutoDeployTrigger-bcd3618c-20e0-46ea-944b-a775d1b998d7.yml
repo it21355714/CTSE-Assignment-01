@@ -36,6 +36,6 @@ jobs:
           containerAppName: order-service-app
           resourceGroup: ctse-assi1
           imageToBuild: jeno1234/order-service-app:${{ github.sha }}
-          buildArgumentsKey: |
-            buildArgumentsValues
-i want sonor in ci/cd pipe line so can you merge
+
+
+
