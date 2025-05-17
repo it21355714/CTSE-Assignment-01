@@ -29,13 +29,11 @@ jobs:
         uses: azure/container-apps-deploy-action@v2
         with:
           appSourcePath: ${{ github.workspace }}
-         dockerfilePathKey: ./Dockerfile
+          dockerfilePathKey: ./Dockerfile
           registryUrl: docker.io
           registryUsername: ${{ secrets.ORDERSERVICEAPP_REGISTRY_USERNAME }}
           registryPassword: ${{ secrets.ORDERSERVICEAPP_REGISTRY_PASSWORD }}
           containerAppName: order-service-app
           resourceGroup: ctse-assi1
           imageToBuild: jeno1234/order-service-app:${{ github.sha }}
-
-
 
