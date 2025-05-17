@@ -1,11 +1,12 @@
-
-name: SonarQube Analysis
+name: SonarCloud Analysis
 
 on:
   push:
     branches:
-      - main
+      - order-service
   pull_request:
+    branches:
+      - order-service
     types: [opened, synchronize, reopened]
 
 jobs:
@@ -16,7 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Disable shallow clone for better analysis
+          fetch-depth: 0  # Needed for accurate analysis
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -24,7 +25,7 @@ jobs:
           java-version: 17
           distribution: 'zulu'
 
-      - name: Cache SonarQube packages
+      - name: Cache SonarCloud packages
         uses: actions/cache@v4
         with:
           path: ~/.sonar/cache
@@ -38,7 +39,12 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
-      - name: Build and analyze
+      - name: Build and analyze with SonarCloud
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=it21355714_CTSE-Assignment-01
+        run: |
+          mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+            -Dsonar.projectKey=it21355714_CTSE-Assignment-01 \
+            -Dsonar.organization=it21355714 \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
