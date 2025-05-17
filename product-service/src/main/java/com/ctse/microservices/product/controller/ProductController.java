@@ -19,7 +19,7 @@ public class ProductController {
 
     @GetMapping("/test")
     public String test() {
-        return "Product Service is working successfully!";
+        return "Product Service is working successfully fine!";
     }
 
     @PostMapping
